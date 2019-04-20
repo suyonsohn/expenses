@@ -3,6 +3,10 @@ const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
 const mongoose = require("mongoose");
 
+const auth = require("./routes/api/auth");
+const profile = require("./routes/api/profile");
+const expenses = require("./routes/api/expenses");
+
 const app = express();
 
 const jwtCheck = jwt({
@@ -33,6 +37,11 @@ app.get("/public", (req, res) => {
 app.get("/private", jwtCheck, (req, res) => {
   res.status(200).send("Hello PRIVATE expenses!");
 });
+
+// Use Routes
+app.use("/api/auth", auth);
+app.use("/api/profile", profile);
+app.use("/api/expenses", expenses);
 
 app.get("*", (req, res) => {
   res.sendStatus(404);
