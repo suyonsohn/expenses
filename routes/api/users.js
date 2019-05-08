@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-// https://express-validator.github.io/docs/
+
 const { check, validationResult } = require('express-validator/check');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
@@ -51,9 +51,6 @@ router.post('/',
       });
       await user.save();
 
-      res.send('User saved');
-
-      // TODO: Return JWT
       // TODO: Fix MongoDB DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
     } catch (err) {
       console.error(err.message);
