@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const OrganizationSchema = mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user'
-  },
   name: {
     type: String
   },
@@ -12,7 +8,8 @@ const OrganizationSchema = mongoose.Schema({
     type: String
   },
   defaultCurrency: {
-    type: String
+    type: String,
+    default: 'CAD'
   },
   date: {
     type: Date,
