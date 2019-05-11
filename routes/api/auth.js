@@ -3,13 +3,15 @@ const router = express.Router();
 
 const { check, validationResult } = require("express-validator/check");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const User = require("../../models/User");
 const auth = require("../../middleware/auth");
+const privateKey = require("../../config/keys").privateKey;
 
-// @route GET api/auth
-// @desc  Return authenticated user
-// @access Private
+// @route   GET api/auth
+// @desc    Return authenticated user
+// @access  Private
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -21,7 +23,7 @@ router.get("/", auth, async (req, res) => {
 });
 
 // @route   POST api/auth
-// @desc    Authenticate user
+// @desc    Authenticate user & get token
 // @access  Public
 router.post(
   "/",
@@ -52,7 +54,16 @@ router.post(
           .json({ errors: [{ msg: "Invalid credentials" }] });
       }
 
-      res.json({ msg: "User is authenticated" });
+      const payload = {
+        user: {
+          id: user.id
+        }
+      };
+
+      jwt.sign(payload, privateKey, { expiresIn: "1h" }, (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      });
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");
