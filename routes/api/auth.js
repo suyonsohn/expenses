@@ -1,18 +1,33 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const { check, validationResult } = require('express-validator/check');
-const bcrypt = require('bcryptjs');
+const { check, validationResult } = require("express-validator/check");
+const bcrypt = require("bcryptjs");
 
-const User = require('../../models/User');
+const User = require("../../models/User");
+const auth = require("../../middleware/auth");
+
+// @route GET api/auth
+// @desc  Return authenticated user
+// @access Private
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 // @route   POST api/auth
 // @desc    Authenticate user
 // @access  Public
-router.post('/',
+router.post(
+  "/",
   [
-    check('email', 'Please enter your email').isEmail(),
-    check('password', 'Please enter your password').exists()
+    check("email", "Please enter your email").isEmail(),
+    check("password", "Please enter your password").exists()
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -25,19 +40,24 @@ router.post('/',
     try {
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid credentials" }] });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid credentials" }] });
       }
 
-      res.json({ msg: 'User is authenticated' });
+      res.json({ msg: "User is authenticated" });
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server error');
+      res.status(500).send("Server error");
     }
-  });
+  }
+);
 
 module.exports = router;

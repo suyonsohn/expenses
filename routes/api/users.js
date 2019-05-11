@@ -68,7 +68,7 @@ router.post(
 
       jwt.sign(payload, privateKey, { expiresIn: "1h" }, (err, token) => {
         if (err) throw err;
-        res.json(token);
+        res.json({ token });
       });
 
       // TODO: Fix MongoDB DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
