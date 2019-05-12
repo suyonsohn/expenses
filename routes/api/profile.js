@@ -139,4 +139,60 @@ router.delete("/", auth, async (req, res) => {
   }
 });
 
+// @route   PUT api/profile/trips
+// @desc    Add trips to profile
+// @access  Private
+router.put(
+  "/trips",
+  [
+    auth,
+    check("name", "Please enter the name of this trip")
+      .not()
+      .isEmpty(),
+    check("country", "Please enter the country.")
+      .not()
+      .isEmpty(),
+    check("currency", "Please enter the currency you used in this trip.")
+      .not()
+      .isEmpty(),
+    check("from", "Please enter the start date of your trip")
+      .not()
+      .isEmpty(),
+    check("to", "Please enter the end date of your trip")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { name, country, currency, from, to } = req.body;
+
+    const newTrip = {
+      name,
+      country,
+      currency,
+      from,
+      to
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      if (!profile) {
+        return res.status(400).json({ msg: "Profile not found" });
+      }
+      profile.trips.unshift(newTrip);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
 module.exports = router;
