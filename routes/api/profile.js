@@ -195,4 +195,27 @@ router.put(
   }
 );
 
+// @route   DELETE api/profile/trips/:trip_id
+// @desc    Delete a trip from profile
+// @access  Private
+router.delete("/trips/:trip_id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    // Get remove index
+    const removeIdex = profile.trips
+      .map(trip => trip.id)
+      .indexOf(req.params.trip_id);
+
+    profile.trips.splice(removeIdex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;
