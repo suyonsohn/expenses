@@ -18,7 +18,7 @@ const ReceiptSchema = new Schema({
     type: Date,
     required: true
   },
-  category: {
+  type: {
     type: String,
     required: true
   },
@@ -61,8 +61,7 @@ const ReceiptSchema = new Schema({
         ref: "user"
       },
       text: {
-        type: String,
-        required: true
+        type: String
       },
       name: {
         type: String
