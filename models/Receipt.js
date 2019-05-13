@@ -48,12 +48,14 @@ const ReceiptSchema = new Schema({
   note: {
     type: String
   },
-  checkMark: {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "user"
+  checkMarks: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      }
     }
-  },
+  ],
   comments: [
     {
       user: {
