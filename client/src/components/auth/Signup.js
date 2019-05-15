@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -47,6 +48,7 @@ const Signup = () => {
             name="email"
             value={email}
             onChange={e => onChange(e)}
+            required
           />
           <small className="form-text">
             This site uses Gravatar so if you want a profile image, use a
@@ -61,6 +63,7 @@ const Signup = () => {
             minLength="6"
             value={password}
             onChange={e => onChange(e)}
+            required
           />
         </div>
         <div className="form-group">
@@ -71,12 +74,13 @@ const Signup = () => {
             minLength="6"
             value={password2}
             onChange={e => onChange(e)}
+            required
           />
         </div>
-        <input type="submit" className="btn btn-primary" value="Register" />
+        <input type="submit" className="btn btn-primary" value="Sign up" />
       </form>
       <p className="my-1">
-        Already have an account? <a href="login.html">Sign In</a>
+        Already have an account? <Link to="/login">Log In</Link>
       </p>
     </Fragment>
   );

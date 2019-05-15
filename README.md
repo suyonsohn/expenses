@@ -1,4 +1,4 @@
-# Expenses API
+# Expense Tracker App
 
 ## Tech Stack
 
