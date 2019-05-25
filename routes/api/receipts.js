@@ -66,4 +66,29 @@ router.post(
   }
 );
 
+// @route   PUT api/receipts/checkmark/:id
+// @desc    Add check mark
+// @access  Private
+router.put("/checkmark/:id", auth, async (req, res) => {
+  try {
+    const receipt = await Receipt.findById(req.params.id);
+    if (
+      receipt.checkMarks.filter(
+        checkMark => checkMark.user.toString() === req.user.id
+      ).length > 0
+    ) {
+      return res
+        .status(400)
+        .json({ msg: "You have already checked this receipt" });
+    }
+
+    receipt.checkMarks.unshift({ user: req.user.id });
+    await receipt.save();
+    res.json(receipt.checkMarks);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;
